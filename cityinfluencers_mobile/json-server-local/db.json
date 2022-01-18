@@ -1,0 +1,45 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "userName": "denBob",
+        "firstName": "Bob",
+        "name": "Dylan",
+        "adress": "straatnaam 5, Antwerpen",
+        "password": "pass123",
+        "birthDate": "May 24, 1941",
+        "email": "denbob@mail.com",
+        "gender": "M"
+
+      }
+    ],
+    "campaigns": [
+        {
+            "id" : 1,
+            "employeeId" : 1,
+            "locationId" : 1,
+            "name": "The Big One",
+            "description": "to the moon",
+            "fotoUrl": "http://images.com/123",
+            "status": "non-actief"
+        },
+        {
+            "id" : 2,
+            "employeeId" : 1,
+            "locationId" : 2,
+            "name": "The Movement",
+            "description": "Long have we waited",
+            "fotoUrl": "http://images.com/124",
+            "status": "non-actief"
+        },
+        {
+            "id" : 3,
+            "employeeId" : 2,
+            "locationId" : 3,
+            "name": "The Show",
+            "description": "We're live",
+            "fotoUrl": "http://images.com/125",
+            "status": "actief"
+        }
+    ]
+}
