@@ -21,7 +21,7 @@ class NavigationWidget extends StatelessWidget {
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Text(
-                user!.userName.substring(0, 1),
+                user!.firstName.substring(0, 1),
                 style: const TextStyle(fontSize: 40.0),
               ),
             ),
