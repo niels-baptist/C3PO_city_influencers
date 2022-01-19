@@ -22,6 +22,7 @@ class CityInfluencerApi {
       throw Exception('Failed to load users');
     }
   }
+
   // REST API call: GET /users/1
   static Future<User> fetchUser(int id) async {
     var url = Uri.https(server, '/users/' + id.toString());
@@ -33,21 +34,8 @@ class CityInfluencerApi {
       throw Exception('Failed to load user');
     }
   }
-  //REST API call: GET /users return amount
-    static Future<int> fetchUserCount() async {
-    var url = Uri.https(server, '/users');
 
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      List jsonResponse = json.decode(response.body);
-      return jsonResponse.length;
-    } else {
-      throw Exception('Failed to load users');
-    }
-  }
-
-    // REST API call: POST /users
+  // REST API call: POST /users
   static Future<User> createUser(User user) async {
     var url = Uri.https(server, '/users');
 
@@ -64,8 +52,9 @@ class CityInfluencerApi {
       throw Exception('Failed to create user');
     }
   }
-    // ---------- Campaigns ---------------
-     // REST API call: GET /campaigns
+
+  // ---------- Campaigns ---------------
+  // REST API call: GET /campaigns
   static Future<List<Campaign>> fetchCampaigns() async {
     var url = Uri.https(server, '/campaigns');
 
@@ -73,23 +62,27 @@ class CityInfluencerApi {
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
-      return jsonResponse.map((campaign) => Campaign.fromJson(campaign)).toList();
+      return jsonResponse
+          .map((campaign) => Campaign.fromJson(campaign))
+          .toList();
     } else {
       throw Exception('Failed to load campaigns');
     }
   }
 
-  static Future<String> auth(String email, String password) async {
-      var url = Uri.https(server, '/users/' + email);
-      final response = await http.get(url);
-      User temp = User.fromJson(json.decode(response.body));
-      if(temp.password == password){
-          return "OK";
-      }
-      else{
-        throw Exception("Sorry, e-mail of wachtwoord is verkeerd.");
-      }
+  static Future<User> auth(String email, String password) async {
+    final Map<String, String> _queryparameter = <String, String>{
+      'email': email
+    };
+    var url = Uri.https(server, '/users', _queryparameter);
+    final response = await http.get(url);
+    List jsonResponse = json.decode(response.body);
+    List<User> users = jsonResponse.map((user) => User.fromJson(user)).toList();
+    User temp = users[0];
+    if (temp.password == password) {
+      return temp;
+    } else {
+      throw Exception("Sorry, e-mail of wachtwoord is verkeerd.");
+    }
   }
-
-
 }
