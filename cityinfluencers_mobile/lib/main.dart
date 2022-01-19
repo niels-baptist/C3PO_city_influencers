@@ -1,4 +1,5 @@
 import 'package:cityinfluencers_mobile/pages/home.dart';
+import 'package:cityinfluencers_mobile/pages/register.dart';
 import 'package:flutter/material.dart';
  
 void main() => runApp(const MyApp());
@@ -111,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(fontSize: 20),
                   ),
                   onPressed: () {
-                    //signup screen
+                    _navigateToRegister();
                   },
                 )
               ],
@@ -126,6 +127,13 @@ class _LoginPageState extends State<LoginPage> {
       context,
      MaterialPageRoute(
           builder: (context) => HomePage(id: id)),
+    );
+  }
+  void _navigateToRegister() async {
+    await Navigator.push(
+      context,
+     MaterialPageRoute(
+          builder: (context) => const RegisterPage()),
     );
   }
 }

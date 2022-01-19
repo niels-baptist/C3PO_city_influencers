@@ -1,45 +1,53 @@
 {
-    "users": [
-      {
-        "id": 1,
-        "userName": "denBob",
-        "firstName": "Bob",
-        "name": "Dylan",
-        "adress": "straatnaam 5, Antwerpen",
-        "password": "pass123",
-        "birthDate": "May 24, 1941",
-        "email": "denbob@mail.com",
-        "gender": "M"
-
-      }
-    ],
-    "campaigns": [
-        {
-            "id" : 1,
-            "employeeId" : 1,
-            "locationId" : 1,
-            "name": "The Big One",
-            "description": "to the moon",
-            "fotoUrl": "http://images.com/123",
-            "status": "non-actief"
-        },
-        {
-            "id" : 2,
-            "employeeId" : 1,
-            "locationId" : 2,
-            "name": "The Movement",
-            "description": "Long have we waited",
-            "fotoUrl": "http://images.com/124",
-            "status": "non-actief"
-        },
-        {
-            "id" : 3,
-            "employeeId" : 2,
-            "locationId" : 3,
-            "name": "The Show",
-            "description": "We're live",
-            "fotoUrl": "http://images.com/125",
-            "status": "actief"
-        }
-    ]
+  "users": [
+    {
+      "id": 1,
+      "firstName": "Bob",
+      "name": "Dylan",
+      "adress": "straatnaam 5, Antwerpen",
+      "password": "pass123",
+      "birthDate": "May 24, 1941",
+      "email": "denbob@mail.com",
+      "gender": "M"
+    },
+    {
+      "firstName": "Dylan",
+      "name": "Tritsmans",
+      "adress": "Dopheidestraat 2, Turnhout",
+      "password": "lol",
+      "birthDate": "09/04/1997",
+      "email": "dylantritsmans@gmail.com",
+      "gender": "M",
+      "id": 2
+    }
+  ],
+  "campaigns": [
+    {
+      "id": 1,
+      "employeeId": 1,
+      "locationId": 1,
+      "name": "Klimaat Mars",
+      "description": "We moeten de elektriciteitsprijzen nog duurder maken",
+      "fotoUrl": "http://images.com/123",
+      "status": "non-actief"
+    },
+    {
+      "id": 2,
+      "employeeId": 1,
+      "locationId": 2,
+      "name": "COVID Vaccinatie Campagne",
+      "description": "Adverteer de 3de prik",
+      "fotoUrl": "http://images.com/124",
+      "status": "non-actief"
+    },
+    {
+      "id": 3,
+      "employeeId": 2,
+      "locationId": 3,
+      "name": "Elektrische Voertuigen Bonus",
+      "description": "Met de nieuwe wetten willen we meer elektrische voertuigen op de weg",
+      "fotoUrl": "http://images.com/125",
+      "status": "actief"
+    }
+  ]
 }
