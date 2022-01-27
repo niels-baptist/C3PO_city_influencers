@@ -1,3 +1,6 @@
+import 'package:cityinfluencers_mobile/models/domain.dart';
+import 'package:cityinfluencers_mobile/models/influencer.dart';
+import 'package:cityinfluencers_mobile/models/location.dart';
 import 'package:cityinfluencers_mobile/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:cityinfluencers_mobile/models/campaign.dart';
@@ -6,12 +9,12 @@ import 'dart:convert';
 import '../models/user.dart';
 
 class CityInfluencerApi {
-  static String server = 'city-influencers-api.loca.lt';
-
+  // static String server = 'java-rest-api-c3po.westeurope.cloudapp.azure.com';
+  static String server = 'c3poapi.azurewebsites.net';
   // ---------- Users ---------------
   // REST API call: GET /users
   static Future<List<User>> fetchUsers() async {
-    var url = Uri.https(server, '/users');
+    var url = Uri.http(server, '/users');
 
     final response = await http.get(url);
 
@@ -23,21 +26,25 @@ class CityInfluencerApi {
     }
   }
 
-  // REST API call: GET /users/1
-  static Future<User> fetchUser(int id) async {
-    var url = Uri.https(server, '/users/' + id.toString());
-
+  // REST API call: GET /influencers/username
+  static Future<Influencer> fetchUser(String userName) async {
+    var url = Uri.https(server, '/influencers/username/' + userName);
     final response = await http.get(url);
-    if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to load user');
-    }
+    Influencer influencer = Influencer.fromJson(jsonDecode(response.body));
+    return influencer;
+  }
+
+  // REST API call: GET /users/username
+  static Future<User> getUser(String userName) async {
+    var url = Uri.https(server, '/users/username/' + userName);
+    final response = await http.get(url);
+    User user = User.fromJson(jsonDecode(response.body));
+    return user;
   }
 
   // REST API call: POST /users
   static Future<User> createUser(User user) async {
-    var url = Uri.https(server, '/users');
+    var url = Uri.https(server, '/users/register');
 
     final http.Response response = await http.post(
       url,
@@ -46,18 +53,29 @@ class CityInfluencerApi {
       },
       body: jsonEncode(user),
     );
-    if (response.statusCode == 201) {
-      return User.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to create user');
-    }
+    return User.fromJson(jsonDecode(response.body));
+  }
+
+  // REST API call: POST /influencers
+  static Future<Influencer> createInfluencer(Influencer influencer) async {
+    var url = Uri.https(server, '/influencers/register');
+
+    final influencerjson = jsonEncode(influencer);
+    print(influencerjson);
+    final http.Response response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(influencer),
+    );
+    return Influencer.fromJson(jsonDecode(response.body));
   }
 
   // ---------- Campaigns ---------------
   // REST API call: GET /campaigns
   static Future<List<Campaign>> fetchCampaigns() async {
-    var url = Uri.https(server, '/campaigns');
-
+    var url = Uri.https(server, '/campaigns/');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -70,19 +88,78 @@ class CityInfluencerApi {
     }
   }
 
-  static Future<User> auth(String email, String password) async {
-    final Map<String, String> _queryparameter = <String, String>{
-      'email': email
-    };
-    var url = Uri.https(server, '/users', _queryparameter);
+  // REST API call: GET /campaigns/{id}
+  static Future<Campaign> fetchCampaign(int id) async {
+    var url = Uri.https(server, '/campaigns/' + id.toString());
     final response = await http.get(url);
-    List jsonResponse = json.decode(response.body);
-    List<User> users = jsonResponse.map((user) => User.fromJson(user)).toList();
-    User temp = users[0];
-    if (temp.password == password) {
-      return temp;
+    Campaign campaign = Campaign.fromJson(jsonDecode(response.body));
+    if (response.statusCode == 200) {
+      return campaign;
     } else {
-      throw Exception("Sorry, e-mail of wachtwoord is verkeerd.");
+      throw Exception("Sorry, deze campagne werd niet gevonden.");
+    }
+  }
+
+  // REST API call: GET /campaigns/recomended/{influencerId}
+  static Future<List<Campaign>> fetchRecCampaigns(int? influencerId) async {
+    var url =
+        Uri.https(server, '/campaigns/recomended/' + influencerId.toString());
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse
+          .map((campaign) => Campaign.fromJson(campaign))
+          .toList();
+    } else {
+      throw Exception('Failed to load campaigns');
+    }
+  }
+
+  // ---------- Domains ---------------
+  // REST API call: GET /domains
+  static Future<List<Domain>> fetchDomains() async {
+    var url = Uri.https(server, '/domains');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((domain) => Domain.fromJson(domain)).toList();
+    } else {
+      throw Exception('Failed to load domains');
+    }
+  }
+
+  // ---------- Locations ---------------
+  // REST API call: GET /locations
+  static Future<List<Location>> fetchLocations() async {
+    var url = Uri.https(server, '/locations');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse
+          .map((location) => Location.fromJson(location))
+          .toList();
+    } else {
+      throw Exception('Failed to load locations');
+    }
+  }
+
+  // ---------- Influencers ---------------
+  //authenticatie gebaseerd op GET /influencers/username/{username}
+  static Future<Influencer> auth(String userName, String password) async {
+    var url = Uri.https(server, '/influencers/username/' + userName);
+    final response = await http.get(url);
+    Influencer influencer = Influencer.fromJson(jsonDecode(response.body));
+    if (response.statusCode == 200) {
+      if (influencer.user.password == password) {
+        return influencer;
+      } else {
+        throw Exception("Sorry, wachtwoord is verkeerd.");
+      }
+    } else {
+      throw Exception("Sorry, gebruiker niet gevonden.");
     }
   }
 }

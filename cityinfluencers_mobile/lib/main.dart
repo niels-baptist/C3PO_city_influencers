@@ -1,9 +1,10 @@
 import 'package:cityinfluencers_mobile/apis/cityinfluencer_api.dart';
+import 'package:cityinfluencers_mobile/models/user.dart';
 import 'package:cityinfluencers_mobile/pages/home.dart';
 import 'package:cityinfluencers_mobile/pages/register.dart';
+import 'package:cityinfluencers_mobile/pages/registerInfluencer.dart';
 import 'package:flutter/material.dart';
-
-import 'models/user.dart';
+import 'models/influencer.dart';
 
 void main() => runApp(const MyApp());
 
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: _title,
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
@@ -36,11 +38,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
-  String _email = '';
+  String _username = '';
   String _password = '';
-  User? user;
-  final emailController = TextEditingController();
+  Influencer? influencer;
+  final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
@@ -50,8 +51,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
-    emailController.dispose();
+    // verwijder de controllers na gebruik widget.
+    usernameController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -84,10 +85,10 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             padding: const EdgeInsets.all(10),
             child: TextField(
-              controller: emailController,
+              controller: usernameController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'E-mail adres',
+                labelText: 'Gebruikersnaam',
               ),
             ),
           ),
@@ -119,9 +120,9 @@ class _LoginPageState extends State<LoginPage> {
               child: ElevatedButton(
                 child: const Text('Login'),
                 onPressed: () {
-                  _email = emailController.text;
+                  _username = usernameController.text;
                   _password = passwordController.text;
-                  _onLogin(_email, _password);
+                  _onLogin(_username, _password);
                 },
               )),
           //register knop
@@ -145,25 +146,28 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  //geef door naar home page
-  void _onLogin(String email, String password) async {
-    await CityInfluencerApi.auth(email, password).then((result) {
-      user = result;
+  //check login gegevens en ga verder naar home
+  void _onLogin(String username, String password) async {
+    await CityInfluencerApi.auth(username, password).then((result) {
+      influencer = result;
     });
-    _navigateToHome(user!.id);
+    _navigateToHome(influencer!.user.userName);
   }
 
-  void _navigateToHome(int id) async {
+  //naar home pagina
+  void _navigateToHome(String? userName) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => HomePage(id: id)),
+      MaterialPageRoute(builder: (context) => HomePage(username: userName)),
     );
   }
 
+  //naar registratie pagina
   void _navigateToRegister() async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const RegisterPage()),
+       MaterialPageRoute(builder: (context) => const RegisterPage()),
+
     );
   }
 }

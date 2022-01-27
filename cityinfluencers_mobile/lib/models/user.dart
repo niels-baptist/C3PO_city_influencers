@@ -1,28 +1,46 @@
+import 'package:cityinfluencers_mobile/models/location.dart';
+
 class User {
-  int id;
+  int? userId;
+  String userName;
   String firstName;
   String name;
-  String adress;
   String password;
   String birthDate;
   String email;
-  String gender;
+  Location location;
 
-  User({required this.id, required this.firstName, required this.name, required this.adress, required this.password, required this.birthDate, required this.email, required this.gender});
+  User(
+      {this.userId,
+      required this.userName,
+      required this.firstName,
+      required this.name,
+      required this.password,
+      required this.birthDate,
+      required this.email,
+      required this.location});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      firstName: json['firstName'],
-      name: json['name'],
-      adress: json['adress'],
+      userId: json['userId'],
+      userName: json['userName'],
+      firstName: json['firstname'],
+      name: json['lastname'],
       password: json['password'],
-      birthDate: json ['birthDate'],
+      birthDate: json['birthdate'],
       email: json['email'],
-      gender: json['gender'],
-      
+      location: Location.fromJson(json['location']),
     );
   }
 
-  Map<String, dynamic> toJson() => {'firstName': firstName, 'name': name, 'adress': adress, 'password': password, 'birthDate': birthDate, 'email': email, 'gender': gender};
+  Map<String, dynamic> toJson() => {
+        'userId': userId,
+        'email': email,
+        'password': password,
+        'firstname': firstName,
+        'lastname': name,
+        'userName': userName,
+        'birthdate': birthDate,
+        'location': location.toJson(),
+      };
 }

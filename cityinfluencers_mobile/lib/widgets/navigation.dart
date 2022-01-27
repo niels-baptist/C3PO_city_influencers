@@ -1,3 +1,5 @@
+import 'package:cityinfluencers_mobile/main.dart';
+import 'package:cityinfluencers_mobile/models/influencer.dart';
 import 'package:cityinfluencers_mobile/models/user.dart';
 import 'package:cityinfluencers_mobile/pages/campaigns.dart';
 import 'package:cityinfluencers_mobile/pages/home.dart';
@@ -6,8 +8,8 @@ import 'package:cityinfluencers_mobile/pages/vouchers.dart';
 import 'package:flutter/material.dart';
 
 class NavigationWidget extends StatelessWidget {
-  final User? user;
-  const NavigationWidget({Key? key, required this.user}) : super(key: key);
+  final Influencer? influencer;
+  const NavigationWidget({Key? key, required this.influencer}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +18,12 @@ class NavigationWidget extends StatelessWidget {
         children: <Widget>[
           //navigatie user paneeltje
           UserAccountsDrawerHeader(
-            accountName: Text(user!.firstName + " " + user!.name),
-            accountEmail: Text(user!.email),
+            accountName: Text(influencer!.user.firstName + " " + influencer!.user.name),
+            accountEmail: Text(influencer!.user.email),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Text(
-                user!.firstName.substring(0, 1),
+                influencer!.user.firstName.substring(0, 1),
                 style: const TextStyle(fontSize: 40.0),
               ),
             ),
@@ -34,7 +36,7 @@ class NavigationWidget extends StatelessWidget {
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      HomePage(id: user!.id)));
+                      HomePage(username: influencer!.user.userName)));
             },
           ),
            //navigate to profile
@@ -45,7 +47,7 @@ class NavigationWidget extends StatelessWidget {
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      ProfilePage(id: user!.id)));
+                      ProfilePage(username: influencer!.user.userName)));
             },
           ),
            //navigate to campaigns
@@ -56,7 +58,7 @@ class NavigationWidget extends StatelessWidget {
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      CampaignPage(id: user!.id)));
+                      CampaignPage(username: influencer!.user.userName)));
             },
           ),
              //navigate to vouchers
@@ -67,7 +69,17 @@ class NavigationWidget extends StatelessWidget {
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) =>
-                      VoucherPage(id: user!.id)));
+                      VoucherPage(username: influencer!.user.userName)));
+            },
+          ),
+            ListTile(
+            title: const Text('Uitloggen'),
+            trailing: const Icon(Icons.logout),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      const MyApp()));
             },
           ),
         ],
