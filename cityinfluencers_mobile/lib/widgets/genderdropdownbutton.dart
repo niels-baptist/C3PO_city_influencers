@@ -5,7 +5,7 @@ typedef MyCallback = void Function(String gender);
 
 class GenderDropdownButton extends StatelessWidget {
   final String labelText;
-  final String selectedGender;
+  final String? selectedGender;
   final List<String> genders;
   final MyCallback onGenderSelected;
 
@@ -19,7 +19,12 @@ class GenderDropdownButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
+    return DropdownButton<String>( 
+      hint: Align(
+        child: Text(
+            labelText,
+        ),
+      ),
       isExpanded: true,
       items: genders.map((String gender) {
         return DropdownMenuItem<String>(

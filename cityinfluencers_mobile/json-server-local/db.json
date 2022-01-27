@@ -2,6 +2,7 @@
   "users": [
     {
       "id": 1,
+      "username": "denBob",
       "firstName": "Bob",
       "name": "Dylan",
       "adress": "straatnaam 5, Antwerpen",
@@ -11,6 +12,7 @@
       "gender": "M"
     },
     {
+      "username": "denDylan",
       "firstName": "Dylan",
       "name": "Tritsmans",
       "adress": "Dopheidestraat 2, Turnhout",
@@ -19,6 +21,17 @@
       "email": "dylantritsmans@gmail.com",
       "gender": "M",
       "id": 2
+    },
+    {
+      "username": "denJan",
+      "firstName": "jan",
+      "name": "janssen",
+      "adress": "ergens 2, ergens",
+      "password": "123",
+      "birthDate": "01/01/1974",
+      "email": "janjanssen@gmail.com",
+      "gender": "M",
+      "id": 3
     }
   ],
   "campaigns": [

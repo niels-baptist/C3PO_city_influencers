@@ -1,19 +1,23 @@
+import 'package:cityinfluencers_mobile/models/influencer.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../models/campaign.dart';
 import '../apis/cityinfluencer_api.dart';
 import '../widgets/navigation.dart';
+
 class HomePage extends StatefulWidget {
-  final int id;
-  const HomePage({Key? key, required this.id}) : super(key: key);
+  final String? username;
+  const HomePage({Key? key, required this.username}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  User? user;
+  Influencer? influencer;
   List<Campaign?> campaignList = [];
+  List<Campaign?> postList = [];
+  List<Campaign?> succespostList = [];
   int count = 0;
 
   //beginstate checks
@@ -21,14 +25,14 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _getCampaigns();
-    _getUser(widget.id);
+    _getUser(widget.username);
   }
 
   //opvragen van de user gegevens
-  void _getUser(int id) {
-    CityInfluencerApi.fetchUser(id).then((result) {
+  void _getUser(String? username) {
+    CityInfluencerApi.fetchUser(username!).then((result) {
       setState(() {
-        user = result;
+        influencer = result;
       });
     });
   }
@@ -41,7 +45,7 @@ class _HomePageState extends State<HomePage> {
       });
     });
   }
-  
+
   //build
   @override
   Widget build(BuildContext context) {
@@ -57,24 +61,31 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text("Posts in afwachting", style: TextStyle(fontSize: 25, color: Colors.deepPurpleAccent))),
-            _postsListItems(),
+                padding: EdgeInsets.all(8.0),
+                child: Text("Posts in afwachting",
+                    style: TextStyle(
+                        fontSize: 25, color: Colors.deepPurpleAccent))),
+            // _postsListItems(),
             const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text("Ingezonden campagnes", style: TextStyle(fontSize: 25, color: Colors.deepPurpleAccent))),
+                padding: EdgeInsets.all(8.0),
+                child: Text("Aanbevolen campagnes",
+                    style: TextStyle(
+                        fontSize: 25, color: Colors.deepPurpleAccent))),
             _recListItems(),
             const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text("Posts in afwachting", style: TextStyle(fontSize: 25, color: Colors.deepPurpleAccent))),
-            _sentListItems()
+                padding: EdgeInsets.all(8.0),
+                child: Text("Ingezonden campagnes",
+                    style: TextStyle(
+                        fontSize: 25, color: Colors.deepPurpleAccent))),
+            // _sentListItems()
           ],
         ),
       ),
     );
   }
+
   ListView _postsListItems() {
-      return ListView.builder(
+    return ListView.builder(
       itemCount: count,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int position) {
@@ -84,19 +95,20 @@ class _HomePageState extends State<HomePage> {
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.deepPurple,
-              child: Text(campaignList[position]!.name.substring(0, 1)),
+              //child: Text(campaignList[position]!.name.substring(0, 1)),
             ),
             title: Text(campaignList[position]!.name),
             onTap: () {
-             // _navigateToProfile(userList[position].id);
+              //  _navigateToProfile(userList[position].id);
             },
           ),
         );
       },
     );
   }
+
   ListView _recListItems() {
-      return ListView.builder(
+    return ListView.builder(
       itemCount: count,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int position) {
@@ -110,41 +122,42 @@ class _HomePageState extends State<HomePage> {
             ),
             title: Text(campaignList[position]!.name),
             onTap: () {
-             // _navigateToProfile(userList[position].id);
-            },
-          ),
-        );
-      },
-    );
-  }  
-  ListView _sentListItems() {
-      return ListView.builder(
-      itemCount: count,
-      shrinkWrap: true,
-      itemBuilder: (BuildContext context, int position) {
-        return Card(
-          color: Colors.white,
-          elevation: 2.0,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.deepPurple,
-              child: Text(campaignList[position]!.name.substring(0, 1)),
-            ),
-            title: Text(campaignList[position]!.name),
-            onTap: () {
-             // _navigateToProfile(userList[position].id);
+              // _navigateToProfile(userList[position].id);
             },
           ),
         );
       },
     );
   }
-  
+
+  ListView _sentListItems() {
+    return ListView.builder(
+      itemCount: count,
+      shrinkWrap: true,
+      itemBuilder: (BuildContext context, int position) {
+        return Card(
+          color: Colors.white,
+          elevation: 2.0,
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.deepPurple,
+              child: Text(campaignList[position]!.name.substring(0, 1)),
+            ),
+            title: Text(campaignList[position]!.name),
+            onTap: () {
+              // _navigateToCampaign(campaignList[position].id);
+            },
+          ),
+        );
+      },
+    );
+  }
+
   _loadNavigation() {
-    if (user == null) {
+    if (influencer == null) {
       return const Drawer(child: Text("Loading..."));
     } else {
-      return NavigationWidget(user: user!);
+      return NavigationWidget(influencer: influencer!);
     }
   }
 }

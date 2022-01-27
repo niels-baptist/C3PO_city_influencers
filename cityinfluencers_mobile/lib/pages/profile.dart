@@ -1,30 +1,31 @@
+import 'package:cityinfluencers_mobile/models/influencer.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../apis/cityinfluencer_api.dart';
 import '../widgets/navigation.dart';
 class ProfilePage extends StatefulWidget {
-  final int id;
-  const ProfilePage({Key? key, required this.id}) : super(key: key);
+  final String? username;
+  const ProfilePage({Key? key, required this.username}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  User? user;
+  Influencer? influencer;
   
   //beginstate checks
   @override
   void initState() {
     super.initState();
-    _getUser(widget.id);
+    _getUser(widget.username);
   }
 
   //opvragen van de user gegevens
-  void _getUser(int id) {
-    CityInfluencerApi.fetchUser(id).then((result) {
+  void _getUser(String? username) {
+    CityInfluencerApi.fetchUser(username!).then((result) {
       setState(() {
-        user = result;
+        influencer = result;
       });
     });
   } 
@@ -41,10 +42,10 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   } 
   _loadNavigation() {
-    if (user == null) {
+    if (influencer == null) {
       return const Drawer(child: Text("Loading..."));
     } else {
-      return NavigationWidget(user: user!);
+      return NavigationWidget(influencer: influencer!);
     }
   }
 }
