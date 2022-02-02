@@ -26,6 +26,6 @@ class Submission {
         'submissionId': submissionId,
         'url': url,
         'description': description,
-        'submissionStatus': submissionStatus.toJson()
+        'submissionStatus': submissionStatus
       };
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cityinfluencers_mobile/models/domain.dart';
+import 'package:cityinfluencers_mobile/models/submission.dart';
 import 'package:cityinfluencers_mobile/models/user.dart';
 
 class Influencer {
@@ -20,8 +21,9 @@ class Influencer {
     return Influencer(
       influencerId: json['influencerId'],
       user: User.fromJson(json['user']),
-      gender: json['gender'], 
-      domains: (json['domains'] as List).map((i) => Domain.fromJson(i)).toList(),
+      gender: json['gender'],
+      domains:
+          (json['domains'] as List).map((i) => Domain.fromJson(i)).toList(),
     );
   }
 

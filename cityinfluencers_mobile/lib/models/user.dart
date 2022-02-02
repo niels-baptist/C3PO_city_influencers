@@ -41,6 +41,6 @@ class User {
         'lastname': name,
         'userName': userName,
         'birthdate': birthDate,
-        'location': location.toJson(),
+        'location': location,
       };
 }

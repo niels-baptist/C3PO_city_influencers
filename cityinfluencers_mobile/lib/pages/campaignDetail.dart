@@ -6,9 +6,15 @@ import 'package:cityinfluencers_mobile/apis/cityinfluencer_api.dart';
 import 'package:cityinfluencers_mobile/models/campaign.dart';
 import 'package:cityinfluencers_mobile/models/domain.dart';
 import 'package:cityinfluencers_mobile/models/influencer.dart';
+import 'package:cityinfluencers_mobile/models/submission.dart';
 import 'package:cityinfluencers_mobile/pages/campaigns.dart';
+import 'package:cityinfluencers_mobile/pages/home.dart';
+import 'package:cityinfluencers_mobile/pages/submission.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
+import '../main.dart';
 import '../widgets/navigation.dart';
 
 class CampaignDetailPage extends StatefulWidget {
@@ -27,97 +33,181 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
 
   @override
   void initState() {
-    _getUser(widget.username);
-    _getCampaign(widget.id);
+    _getStarted(widget.username);
     super.initState();
   }
 
-  Future<Influencer?> _getUser(String? username) async {
+  void _getStarted(String? username) async {
     await CityInfluencerApi.fetchUser(username!).then((result) {
       setState(() {
         influencer = result;
       });
     });
-  }
-
-  Future<Campaign?> _getCampaign(int? id) async {
-    await CityInfluencerApi.fetchCampaign(id!).then((result) {
+    await CityInfluencerApi.fetchCampaign(widget.id!).then((result) {
       setState(() {
         campaign = result;
       });
     });
+  
   }
+
+  
 
   //build
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Center(child: Text("City Influencers")),
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+        title: 
+          Align(
+            alignment: Alignment.topRight,
+            child: Image.asset("assets/ci-logo.png", fit: BoxFit.cover, height: 100),
+          ),
         ),
-        //Navigation drawer
-        drawer: _loadNavigation(),
-        body: Container(
-            padding: const EdgeInsets.all(5.0),
-            color: Colors.white,
-            child: Column(children: [
-              Row(
+      body: Container(
+          padding: const EdgeInsets.only(left: 50.0, bottom: 3.0, right: 50.0),
+          child: Column(
+            children: [ 
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child:
+                  ClipOval(
+                        child: 
+                          AspectRatio(
+                              aspectRatio: 1 / 1,
+                              child:FadeInImage(
+                               
+                                fit: BoxFit.cover,
+                                image: NetworkImage(campaign!.fotoUrl),
+                                placeholder: const AssetImage('assets/loading.png'),
+                    ))),
+              ),
+              
+              Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(campaign!.name,
+                      style: const TextStyle(
+                          fontSize: 25,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold))),
+              Column(
                 children: [
-                  BackButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  CampaignPage(username: widget.username)));
-                    },
-                    color: Colors.deepPurple,
-                  ),
                   Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(campaign!.name,
-                          style: const TextStyle(
-                              fontSize: 25, color: Colors.deepPurpleAccent))),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                    child:
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Beschrijving:",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.black),
+                        ),
+                      ),
+                  ),
+                  
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(campaign!.description, 
+                    style: TextStyle(
+                      color: Colors.grey[600]
+                    ),
+                    ),
+                  ),
+                  
+                  Padding(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                    child:
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Locatie:",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: Colors.black),
+                        ),
+                      )
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(campaign!.location.name +
+                        ", " +
+                        campaign!.location.postalCode,
+                        style: TextStyle(
+                          color: Colors.grey[600]
+                        ),
+                    ),
+                  ),
+                  
+                  Padding(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                    child: 
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child:
+                          Text(
+                            "Periode:",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  
+                  
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child:
+                      Text(campaign!.startDate.split('T')[0] + ' - ' + campaign!.endDate.split('T')[0],
+                        style: TextStyle(
+                          color: Colors.grey[600]
+                        ),
+                    ),
+                  ),
+                      
                 ],
               ),
-              Container(
-                  padding: const EdgeInsets.only(left: 10.0, bottom: 3.0),
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  child: FadeInImage(
-                    image: NetworkImage(campaign!.fotoUrl),
-                    placeholder: const AssetImage('loading.png'),
-                  )),
-              const Padding(
-                padding: EdgeInsets.only(top: 5.0, bottom: 3.0),
-                child: Text(
-                  "Beschrijving:",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                      color: Colors.deepPurpleAccent),
-                ),
+                Padding(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                    child:
+                      SizedBox(
+                        height: 40,
+                        child:
+                          ElevatedButton(
+                              onPressed: () {
+                                _postNavigate(influencer!.influencerId, influencer!.user.userName, campaign!.id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  onPrimary: Colors.white),
+                              child: const Text('Doe Mee'))
+                      )
               ),
-              Text(campaign!.description),
-              const Padding(
-                  padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
-                  child: Text(
-                    "Locatie:",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: Colors.deepPurpleAccent),
-                  )),
-              Text(campaign!.location.name +
-                  ", " +
-                  campaign!.location.postalCode),
-            ])));
+            ],
+          )),
+    );
   }
 
-  _loadNavigation() {
-    if (influencer == null) {
-      return const Drawer(child: Text("Loading..."));
-    } else {
-      return NavigationWidget(influencer: influencer!);
-    }
+  void _postNavigate(int? influencerId, String userName, int campaignId) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SubmissionPage(
+                influencerId: influencerId,
+                username: userName,
+                campaignId: campaignId,
+              )),
+    );
   }
+ 
 }
+

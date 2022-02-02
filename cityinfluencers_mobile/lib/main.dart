@@ -19,11 +19,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: _title,
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.cyan,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(
-        appBar: AppBar(title: const Center(child: Text(_title))),
+        appBar: AppBar(backgroundColor: Colors.transparent, shadowColor: Colors.transparent,),
         body: const LoginPage(),
       ),
     );
@@ -65,13 +65,20 @@ class _LoginPageState extends State<LoginPage> {
         children: <Widget>[
           //kop
           Container(
+            alignment: Alignment.center,
+            height: MediaQuery.of(context).size.height * 0.3,
+            padding: const EdgeInsets.all(10),
+            child: Image.asset('assets/ci-logo.png'),
+
+          ),
+          Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
               child: const Text(
                 'Welkom bij City Influencers',
                 style: TextStyle(
-                    color: Colors.deepPurple,
-                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                     fontSize: 30),
               )),
           Container(
@@ -83,30 +90,30 @@ class _LoginPageState extends State<LoginPage> {
               )),
 
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.10, 
+              right: MediaQuery.of(context).size.width * 0.10,),
             child: TextField(
               controller: usernameController,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: 'Gebruikersnaam',
               ),
             ),
           ),
           //input wachtwoord
           Container(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.10, 
+              right: MediaQuery.of(context).size.width * 0.10,),
             child: TextField(
               controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
                 labelText: 'Wachtwoord',
               ),
             ),
           ),
           //knop wachtwoord vergeten
           Padding(
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.only(top: 15.0, bottom: 50.00),
               child: TextButton(
                 onPressed: () {
                   //forgot password screen
@@ -114,11 +121,17 @@ class _LoginPageState extends State<LoginPage> {
                 child: const Text('Wachtwoord vergeten?'),
               )),
           //login knop
-          Container(
-              height: 50,
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+          SizedBox(
+              height: 60,
+              width: MediaQuery.of(context).size.width * 0.60,
               child: ElevatedButton(
-                child: const Text('Login'),
+                        style: 
+                        ElevatedButton.styleFrom(shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        onPrimary: Colors.white
+                        ),
+                child: const Text('Login', style: TextStyle(fontSize: 20),),
                 onPressed: () {
                   _username = usernameController.text;
                   _password = passwordController.text;
@@ -126,21 +139,24 @@ class _LoginPageState extends State<LoginPage> {
                 },
               )),
           //register knop
-          Row(
-            children: <Widget>[
-              const Text("Nog geen account?"),
-              TextButton(
-                child: const Text(
-                  'Registeer je',
-                  style: TextStyle(fontSize: 20),
-                ),
-                onPressed: () {
-                  _navigateToRegister();
-                },
-              )
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
+          Padding(padding: EdgeInsets.only(top: 10),child:  
+            Row(
+              children: <Widget>[
+                const Text("Nog geen account?"),
+                TextButton(
+                  child: const Text(
+                    'Registeer je',
+                    
+                  ),
+                  onPressed: () {
+                    _navigateToRegister();
+                  },
+                )
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
           ),
+         
         ],
       ),
     );
@@ -151,11 +167,11 @@ class _LoginPageState extends State<LoginPage> {
     await CityInfluencerApi.auth(username, password).then((result) {
       influencer = result;
     });
-    _navigateToHome(influencer!.user.userName);
+    _navigateToHome(influencer!.influencerId, influencer!.user.userName);
   }
 
   //naar home pagina
-  void _navigateToHome(String? userName) async {
+  void _navigateToHome(int? influencerId, String? userName) async {
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => HomePage(username: userName)),

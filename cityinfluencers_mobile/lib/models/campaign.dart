@@ -6,18 +6,20 @@ class Campaign {
   int id;
   Location location;
   CampaignStatus campaignStatus;
-  List<Submission> submissions;
   String name;
   String description;
+  String startDate;
+  String endDate;
   String fotoUrl;
 
   Campaign(
       {required this.id,
       required this.location,
       required this.campaignStatus,
-      required this.submissions,
       required this.name,
       required this.description,
+      required this.startDate,
+      required this.endDate,
       required this.fotoUrl});
 
   factory Campaign.fromJson(Map<String, dynamic> json) {
@@ -25,9 +27,10 @@ class Campaign {
       id: json['campaignId'],
       location: Location.fromJson(json['location']),
       campaignStatus: CampaignStatus.fromJson(json['campaignStatus']),
-      submissions: (json['submissions'] as List).map((i) => Submission.fromJson(i)).toList(),
       name: json['name'],
       description: json['description'],
+      startDate: json['startDate'],
+      endDate: json['endDate'],
       fotoUrl: json['fotoUrl'],
     );
   }
@@ -36,7 +39,6 @@ class Campaign {
         'campaignId': id,
         'location': location.toJson(),
         'campaignStatus': campaignStatus.toJson(),
-        'submissions': submissions.map((i) => i.toJson()),
         'name': name,
         'description': description,
         'foto_url': fotoUrl

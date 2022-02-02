@@ -4,9 +4,6 @@
 import 'package:cityinfluencers_mobile/apis/cityinfluencer_api.dart';
 import 'package:cityinfluencers_mobile/models/domain.dart';
 import 'package:cityinfluencers_mobile/models/influencer.dart';
-import 'package:cityinfluencers_mobile/models/location.dart';
-import 'package:cityinfluencers_mobile/widgets/domaindropdownbutton.dart';
-import 'package:cityinfluencers_mobile/widgets/locationdropdownbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 import '../models/user.dart';
@@ -14,7 +11,8 @@ import '../main.dart';
 import '../widgets/genderdropdownbutton.dart';
 
 class RegisterInfluencerPage extends StatefulWidget {
-  const RegisterInfluencerPage({Key? key, required this.user})
+  const RegisterInfluencerPage({Key? key, 
+  required this.user})
       : super(key: key);
   final User user;
 
@@ -34,14 +32,23 @@ class _RegisterInfluencerPageState extends State<RegisterInfluencerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("City Influencers")),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+          title:  
+            Align(alignment: Alignment.topRight,
+                  child: Image.asset("assets/ci-logo.png", fit: BoxFit.cover, height: 100),
+            ),
         ),
-        body: RegisterForm(user: widget.user));
+        body: RegisterForm(user: widget.user
+        ));
   }
 }
 
 class RegisterForm extends StatefulWidget {
-  const RegisterForm({Key? key, required this.user}) : super(key: key);
+  const RegisterForm({Key? key, required this.user} ) : super(key: key);
   final User user;
   @override
   RegisterFormState createState() {
@@ -79,53 +86,80 @@ class RegisterFormState extends State<RegisterForm> {
           key: _formKey,
           child: Column(
             children: <Widget>[
-              const Text("Geslacht: "),
-              GenderDropdownButton(
-                labelText: "geslacht",
-                selectedGender: _geslacht,
-                genders: _geslachten,
-                onGenderSelected: (geslacht) {
-                  _onGenderChanged(geslacht);
-                },
+              Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                'Registreer je',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30),
+              )),
+              Container(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.10, 
+                  right: MediaQuery.of(context).size.width * 0.10),
+                child:
+                  GenderDropdownButton(
+                    labelText: "geslacht",
+                    selectedGender: _geslacht,
+                    genders: _geslachten,
+                    onGenderSelected: (geslacht) {
+                      _onGenderChanged(geslacht);
+                    },
+                  )
               ),
-              MultiSelectFormField(
-                chipBackGroundColor: Colors.deepPurple,
-                chipLabelStyle: const TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.white),
-                dialogTextStyle: const TextStyle(fontWeight: FontWeight.bold),
-                checkBoxActiveColor: Colors.deepPurple,
-                checkBoxCheckColor: Colors.deepPurpleAccent,
-                dialogShapeBorder: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                title: const Text(
-                  "domains",
-                  style: TextStyle(fontSize: 16),
-                ),
-                dataSource: [
-                  for (Domain domain in _domains)
-                    {
-                      "display": domain.name,
-                      "value": domain,
-                    }
-                ],
-                textField: 'display',
-                valueField: 'value',
-                okButtonLabel: 'OK',
-                cancelButtonLabel: 'CANCEL',
-                hintWidget: const Text('Please choose one or more'),
-                initialValue: _selectedDomains,
-                onSaved: (value) {
-                  if (value == null) return;
-                  setState(() {
-                    for (Domain domain in value) {
-                      _selectedDomains.add(domain);
-                    }
-                  });
-                },
+              Container(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.10, 
+                  right: MediaQuery.of(context).size.width * 0.10, 
+                  bottom: MediaQuery.of(context).size.height * 0.05),
+                child:
+                  MultiSelectFormField(
+                    chipBackGroundColor: Colors.cyan,
+                    chipLabelStyle: const TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                    dialogTextStyle: const TextStyle(fontWeight: FontWeight.bold),
+                    checkBoxActiveColor: Colors.cyan,
+                    checkBoxCheckColor: Colors.cyanAccent,
+                    dialogShapeBorder: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                    title: const Text(
+                      "domains",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    dataSource: [
+                      for (Domain domain in _domains)
+                        {
+                          "display": domain.name,
+                          "value": domain,
+                        }
+                    ],
+                    textField: 'display',
+                    valueField: 'value',
+                    okButtonLabel: 'OK',
+                    cancelButtonLabel: 'CANCEL',
+                    hintWidget: const Text('Please choose one or more'),
+                    initialValue: _selectedDomains,
+                    onSaved: (value) {
+                      if (value == null) return;
+                      setState(() {
+                        for (Domain domain in value) {
+                          _selectedDomains.add(domain);
+                        }
+                      });
+                    },
+                  )
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ElevatedButton(
+             SizedBox(
+              height: 40,
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: ElevatedButton(
+                  style: 
+                          ElevatedButton.styleFrom(shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          onPrimary: Colors.white
+                          ),
                   onPressed: () {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
