@@ -1,4 +1,5 @@
 import 'package:cityinfluencers_mobile/models/influencer.dart';
+import 'package:cityinfluencers_mobile/pages/campaignDetail.dart';
 import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../models/campaign.dart';
@@ -15,96 +16,103 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Influencer? influencer;
-  List<Campaign?> campaignList = [];
-  List<Campaign?> postList = [];
-  List<Campaign?> succespostList = [];
+  List<Campaign> _campaigns = [];
+  List<Campaign> _filteredCampaigns = [];
   int count = 0;
 
   //beginstate checks
   @override
   void initState() {
     super.initState();
-    _getCampaigns();
-    _getUser(widget.username);
+    _getStarted(widget.username);
   }
 
   //opvragen van de user gegevens
-  void _getUser(String? username) {
-    CityInfluencerApi.fetchUser(username!).then((result) {
+  void _getStarted(String? username) async {
+    await CityInfluencerApi.fetchUser(username!).then((result) {
       setState(() {
         influencer = result;
       });
     });
-  }
-
-  void _getCampaigns() {
-    CityInfluencerApi.fetchCampaigns().then((result) {
+    await CityInfluencerApi.fetchRecCampaigns(influencer!.influencerId).then((result) {
       setState(() {
-        campaignList = result.toList();
+        _campaigns = result.toList();
+        _filteredCampaigns = result.toList();
         count = result.length;
       });
     });
   }
 
+
   //build
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text("City Influencers")),
-      ),
-      //Navigation drawer
-      drawer: _loadNavigation(),
-      body: Container(
-        padding: const EdgeInsets.all(5.0),
-        color: Colors.white,
-        child: Column(
-          children: [
-            const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text("Posts in afwachting",
-                    style: TextStyle(
-                        fontSize: 25, color: Colors.deepPurpleAccent))),
-            // _postsListItems(),
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+        ),
+        //Navigation drawer
+        drawer: _loadNavigation(),
+        body: Container(
+          color: Colors.white,
+          child: Column(children: [
+            Stack(
+                alignment: Alignment.bottomCenter,
+                overflow: Overflow.visible,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          height: 200.0,
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage('assets/bannerhome.jpg'))),
+                        ),
+                      )
+                    ],
+                  ),
+                ]),
             const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("Aanbevolen campagnes",
                     style: TextStyle(
-                        fontSize: 25, color: Colors.deepPurpleAccent))),
-            _recListItems(),
-            const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text("Ingezonden campagnes",
-                    style: TextStyle(
-                        fontSize: 25, color: Colors.deepPurpleAccent))),
-            // _sentListItems()
-          ],
-        ),
-      ),
-    );
-  }
-
-  ListView _postsListItems() {
-    return ListView.builder(
-      itemCount: count,
-      shrinkWrap: true,
-      itemBuilder: (BuildContext context, int position) {
-        return Card(
-          color: Colors.white,
-          elevation: 2.0,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.deepPurple,
-              //child: Text(campaignList[position]!.name.substring(0, 1)),
+                        fontSize: 25,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold))),
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3,
+                height: 40.0,
+                child: Align(
+                  alignment: Alignment.center,
+                  child:TextField(
+                  decoration: InputDecoration(
+                    hintText: "Zoeken...",
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.all(0.0),
+                      child: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ), // icon is 48px widget.
+                    ),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                  ),
+                  onChanged: (String string) {
+                    _onSearchChanged(string);
+                  },
+                ),
+              ),
+              ),
             ),
-            title: Text(campaignList[position]!.name),
-            onTap: () {
-              //  _navigateToProfile(userList[position].id);
-            },
-          ),
-        );
-      },
-    );
+            _recListItems(),
+          ]),
+        ));
   }
 
   ListView _recListItems() {
@@ -112,45 +120,55 @@ class _HomePageState extends State<HomePage> {
       itemCount: count,
       shrinkWrap: true,
       itemBuilder: (BuildContext context, int position) {
-        return Card(
-          color: Colors.white,
-          elevation: 2.0,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.deepPurple,
-              child: Text(campaignList[position]!.name.substring(0, 1)),
-            ),
-            title: Text(campaignList[position]!.name),
-            onTap: () {
-              // _navigateToProfile(userList[position].id);
-            },
-          ),
-        );
+        return Padding(
+            padding: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width * 0.10,
+                right: MediaQuery.of(context).size.width * 0.10),
+            child: Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              child: ListTile(
+                leading: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minWidth: 44,
+                    minHeight: 44,
+                    maxWidth: 64,
+                    maxHeight: 64,
+                  ),
+                  child: CircleAvatar(
+                      radius: 20,
+                      backgroundImage:
+                          NetworkImage(_filteredCampaigns[position].fotoUrl)),
+                ),
+                title: Text(_filteredCampaigns[position].name),
+                trailing: const Icon(Icons.arrow_right_outlined),
+                onTap: () {
+                  _navigateToCampaign(
+                      widget.username, _filteredCampaigns[position].id);
+                },
+              ),
+            ));
       },
     );
   }
 
-  ListView _sentListItems() {
-    return ListView.builder(
-      itemCount: count,
-      shrinkWrap: true,
-      itemBuilder: (BuildContext context, int position) {
-        return Card(
-          color: Colors.white,
-          elevation: 2.0,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.deepPurple,
-              child: Text(campaignList[position]!.name.substring(0, 1)),
-            ),
-            title: Text(campaignList[position]!.name),
-            onTap: () {
-              // _navigateToCampaign(campaignList[position].id);
-            },
-          ),
-        );
-      },
+  void _navigateToCampaign(String? userName, int campaignId) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              CampaignDetailPage(username: userName, id: campaignId)),
     );
+  }
+
+  void _onSearchChanged(String string) {
+    setState(() {
+      _filteredCampaigns = _campaigns
+          .where((i) => i.name.toLowerCase().contains(string.toLowerCase()))
+          .toList();
+      count = _filteredCampaigns.length;
+    });
   }
 
   _loadNavigation() {

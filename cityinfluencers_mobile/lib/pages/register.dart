@@ -3,7 +3,11 @@ import 'package:cityinfluencers_mobile/models/influencer.dart';
 import 'package:cityinfluencers_mobile/models/location.dart';
 import 'package:cityinfluencers_mobile/pages/registerInfluencer.dart';
 import 'package:cityinfluencers_mobile/widgets/locationdropdownbutton.dart';
+import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import '../models/user.dart';
 import '../main.dart';
 import '../widgets/genderdropdownbutton.dart';
@@ -27,7 +31,14 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("City Influencers")),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+          title: Align(
+            alignment: Alignment.topRight,
+            child: Image.asset("assets/ci-logo.png", fit: BoxFit.cover, height: 100),
+          ),
         ),
         body: const RegisterForm());
   }
@@ -49,10 +60,11 @@ class RegisterFormState extends State<RegisterForm> {
   String _voornaam = '';
   String _naam = '';
   String _wachtwoord = '';
+  DateTime selectedDate = DateTime.now();
   Location? _location;
   String _geboortedatum = '';
   String _email = '';
-
+  var dateValue = TextEditingController();
 
   @override
   void initState() {
@@ -77,118 +89,149 @@ class RegisterFormState extends State<RegisterForm> {
           child: Column(
             children: <Widget>[
               // Add TextFormFields and ElevatedButton here.
-              const Text("Voornaam:"),
-              TextFormField(
-                decoration: const InputDecoration(hintText: "Voornaam..."),
-                // The validator receives the text that the user has entered.
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Geef een voornaam in';
-                  }
-                  return null;
-                },
-                onChanged: (String string) {
-                  _voornaam = string;
-                },
-              ),
-              const Text("Naam:"),
-              TextFormField(
-                decoration: const InputDecoration(hintText: "Naam..."),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Geef een naam in';
-                  }
-                  return null;
-                },
-                onChanged: (String string) {
-                  _naam = string;
-                },
-              ),
-              const Text("Gebruikersnaam:"),
-              TextFormField(
-                decoration:
-                    const InputDecoration(hintText: "Gebruikersnaam..."),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Geef een gebruikersnaam in';
-                  }
-                  return null;
-                },
-                onChanged: (String string) {
-                  _username = string;
-                },
-              ),
-
-              const Text("Wachtwoord:"),
-              TextFormField(
-                decoration: const InputDecoration(hintText: "Wachtwoord..."),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Geef een wachtwoord in';
-                  }
-                  return null;
-                },
-                onChanged: (String string) {
-                  _wachtwoord = string;
-                },
-                obscureText: true,
-              ),
-              const Text("Geboortedatum:"),
-              TextFormField(
-                decoration: const InputDecoration(hintText: "yyyy-MM-dd"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Geef een geboortedatum in';
-                  }
-                  return null;
-                },
-                onChanged: (String geboortedatum) {
-                  _geboortedatum = geboortedatum;
-                },
-              ),
-              const Text("Email:"),
-              TextFormField(
-                decoration:
-                    const InputDecoration(hintText: "voorbeeld@gmail.com"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Geef een email in';
-                  }
-                  return null;
-                },
-                onChanged: (String string) {
-                  _email = string;
-                },
-              ),
-              const Text("Locatie: "),
-              LocationDropdownButton(
-                labelText: "locatie",
-                selectedLocation: _location,
-                locations: _locations,
-                onLocationSelected: (location) {
-                  _onLocationChanged(location);
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {
-                      _onSubmit(
-                        _username,
-                        _voornaam,
-                        _naam,
-                        _wachtwoord,
-                        _geboortedatum,
-                        _email,
-                        _location!,
-                      );
-                    }
+              Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: const Text(
+                    'Registreer je',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30),
+                  )),
+              Container(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.10,
+                  right: MediaQuery.of(context).size.width * 0.10,
+                ),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Voornaam',
+                  ),
+                  onChanged: (String string) {
+                    _voornaam = string;
                   },
-                  child: const Text('Submit'),
                 ),
               ),
+              Container(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.10,
+                  right: MediaQuery.of(context).size.width * 0.10,
+                ),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Naam',
+                  ),
+                  onChanged: (String string) {
+                    _naam = string;
+                  },
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.10,
+                  right: MediaQuery.of(context).size.width * 0.10,
+                ),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Gebruikersnaam',
+                  ),
+                  onChanged: (String string) {
+                    _username = string;
+                  },
+                ),
+              ),
+
+              Container(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.10,
+                  right: MediaQuery.of(context).size.width * 0.10,
+                ),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Wachtwoord',
+                  ),
+                  onChanged: (String string) {
+                    _wachtwoord = string;
+                  },
+                  obscureText: true,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.10,
+                  right: MediaQuery.of(context).size.width * 0.10,
+                ),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'E-mail',
+                  ),
+                  onChanged: (String string) {
+                    _email = string;
+                  },
+                ),
+              ),
+
+              Container(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.10,
+                  right: MediaQuery.of(context).size.width * 0.10,
+                ),
+                child: GestureDetector(
+                  child: TextFormField(
+                    controller: dateValue,
+                    onTap: () {
+                      _selectDate();
+                      dateValue.text =
+                          "${selectedDate.toLocal()}".split(' ')[0];
+                    },
+                    decoration: const InputDecoration(
+                      labelText: "Geboortedatum",
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.cyan),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              Container(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.10,
+                    right: MediaQuery.of(context).size.width * 0.10,
+                  ),
+                  child: LocationDropdownButton(
+                    labelText: "Locatie",
+                    selectedLocation: _location,
+                    locations: _locations,
+                    onLocationSelected: (location) {
+                      _onLocationChanged(location);
+                    },
+                  )),
+              const Divider(),
+              Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: TextButton(
+                      style: TextButton.styleFrom(primary: Colors.black),
+                      onPressed: () {
+                        // Validate returns true if the form is valid, or false otherwise.
+                        if (_formKey.currentState!.validate()) {
+                          _onSubmit(
+                            _username,
+                            _voornaam,
+                            _naam,
+                            _wachtwoord,
+                            selectedDate,
+                            _email,
+                            _location!,
+                          );
+                        }
+                      },
+                      child: const Icon(Icons.arrow_forward),
+                    ),
+                  )),
             ],
           ),
         ));
@@ -205,7 +248,7 @@ class RegisterFormState extends State<RegisterForm> {
     String voornaam,
     String naam,
     String wachtwoord,
-    String geboortedatum,
+    DateTime selectedDate,
     String email,
     Location locatie,
   ) async {
@@ -215,7 +258,8 @@ class RegisterFormState extends State<RegisterForm> {
       firstName: voornaam,
       name: naam,
       password: wachtwoord,
-      birthDate: geboortedatum + "T22:00:00.000+00:00",
+      birthDate:
+          DateFormat('yyyy-MM-dd').format(selectedDate) + "T22:00:00.000+00:00",
       email: email,
       location: locatie,
     );
@@ -224,10 +268,82 @@ class RegisterFormState extends State<RegisterForm> {
     _navigateToRegister2(user);
   }
 
+  void _selectDate() {
+    showRoundedDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      initialDatePickerMode: DatePickerMode.year,
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+      theme: ThemeData(primaryColor: Colors.cyan[300]),
+      styleDatePicker: MaterialRoundedDatePickerStyle(
+        textStyleDayButton: const TextStyle(fontSize: 36, color: Colors.black),
+        textStyleYearButton: const TextStyle(
+          fontSize: 26,
+          color: Colors.black,
+        ),
+        textStyleDayHeader: const TextStyle(
+          fontSize: 12,
+          color: Colors.black,
+        ),
+        textStyleCurrentDayOnCalendar:
+          const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+        textStyleDayOnCalendar: 
+          const TextStyle(fontSize: 14, color: Colors.black),
+        textStyleDayOnCalendarSelected:
+          const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+        textStyleDayOnCalendarDisabled: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.1)),
+        textStyleMonthYearHeader:
+          const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+        paddingDatePicker: 
+          const EdgeInsets.all(0),
+        paddingMonthHeader: 
+          const EdgeInsets.all(32),
+        paddingActionBar: 
+          const EdgeInsets.all(16),
+        paddingDateYearHeader: 
+          const EdgeInsets.all(32),
+        sizeArrow: 25,
+        colorArrowNext: Colors.black,
+        colorArrowPrevious: Colors.black,
+        marginLeftArrowPrevious: 16,
+        marginTopArrowPrevious: 16,
+        marginTopArrowNext: 16,
+        marginRightArrowNext: 32,
+        textStyleButtonAction: 
+          const TextStyle(fontSize: 14, color: Colors.black),
+        textStyleButtonPositive:
+          const TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
+        textStyleButtonNegative: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.5)),
+        decorationDateSelected: BoxDecoration(color: Colors.cyan[150], shape: BoxShape.circle),
+        backgroundPicker: Colors.white,
+        backgroundActionBar: Colors.cyan[200],
+        backgroundHeaderMonth: Colors.cyan[200],
+      ),
+      styleYearPicker: MaterialRoundedYearPickerStyle(
+        textStyleYear: const TextStyle(fontSize: 20, color:  Colors.black),
+        textStyleYearSelected:
+          const TextStyle(fontSize: 28, color: Colors.black, fontWeight: FontWeight.bold),
+        heightYearRow: 100,
+          backgroundPicker: Colors.white,
+        )
+    ).then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+
+      setState(() {
+        selectedDate = pickedDate;
+        dateValue.text = "${selectedDate.toLocal()}".split(' ')[0];
+      });
+    });
+  }
+
   void _navigateToRegister2(User user) async {
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) =>  RegisterInfluencerPage( user: user)),
+      MaterialPageRoute(
+          builder: (context) => RegisterInfluencerPage(user: user)),
     );
   }
 }

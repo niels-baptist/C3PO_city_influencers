@@ -22,6 +22,7 @@ class _CampaignPageState extends State<CampaignPage> {
   final _formKey = GlobalKey<FormState>();
   Influencer? influencer;
   List<Campaign> _campaigns = [];
+  List<Campaign> _filteredCampaigns = [];
   List<Domain> _domains = [];
   String _searchString = '';
   Domain? selectedDomain;
@@ -49,6 +50,7 @@ class _CampaignPageState extends State<CampaignPage> {
     await CityInfluencerApi.fetchCampaigns().then((result) {
       setState(() {
         _campaigns = result.toList();
+        _filteredCampaigns = result.toList();
         count = result.length;
       });
     });
@@ -78,7 +80,7 @@ class _CampaignPageState extends State<CampaignPage> {
                   padding: EdgeInsets.all(8.0),
                   child: Text("Campagnes",
                       style: TextStyle(
-                          fontSize: 25, color: Colors.deepPurpleAccent))),
+                          fontSize: 25, color: Colors.black))),
               Form(
                   key: _formKey,
                   child: Column(
@@ -86,10 +88,19 @@ class _CampaignPageState extends State<CampaignPage> {
                       SizedBox(
                           width: MediaQuery.of(context).size.width * 0.3,
                           child: TextFormField(
+                            
                             decoration:
-                                const InputDecoration(hintText: "Zoeken..."),
+                                 const InputDecoration(hintText: "Zoeken...",
+                                  prefixIcon: Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Icon(
+                                      Icons.search,
+                                      color: Colors.grey,
+                                    ), // icon is 48px widget.
+                                  ),),
+                                 
                             onChanged: (String string) {
-                              _searchString = string;
+                              _onSearchChanged(string);
                             },
                           )),
                       SizedBox(
@@ -119,12 +130,13 @@ class _CampaignPageState extends State<CampaignPage> {
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.deepPurple,
-              child: Text(_campaigns[position].name.substring(0, 1)),
+              backgroundColor: Colors.cyan,
+              child: Text(_filteredCampaigns[position].name.substring(0, 1)),
             ),
-            title: Text(_campaigns[position].name),
+            title: Text(_filteredCampaigns[position].name),
             onTap: () {
-              _navigateToCampaign(widget.username, _campaigns[position].id);
+              _navigateToCampaign(
+                  widget.username, _filteredCampaigns[position].id);
             },
           ),
         );
@@ -135,6 +147,14 @@ class _CampaignPageState extends State<CampaignPage> {
   void _onDomainChanged(Domain domain) {
     setState(() {
       selectedDomain = domain;
+    });
+  }
+
+  void _onSearchChanged(String string) {
+    setState(() {
+      _filteredCampaigns =
+          _campaigns.where((i) => i.name.toLowerCase().contains(string.toLowerCase())).toList();
+      count = _filteredCampaigns.length;
     });
   }
 

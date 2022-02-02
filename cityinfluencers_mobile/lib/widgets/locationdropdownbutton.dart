@@ -2,7 +2,6 @@ import 'package:cityinfluencers_mobile/models/domain.dart';
 import 'package:cityinfluencers_mobile/models/location.dart';
 import 'package:flutter/material.dart';
 
-
 typedef MyCallback = void Function(Location selectedLocation);
 
 class LocationDropdownButton extends StatelessWidget {
@@ -23,8 +22,9 @@ class LocationDropdownButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return DropdownButton<Location>(
       hint: Align(
+        alignment: Alignment.centerLeft,
         child: Text(
-            labelText,
+          labelText,
         ),
       ),
       isExpanded: true,
