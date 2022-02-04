@@ -40,6 +40,10 @@ dependencies:
   multiselect_formfield: ^0.1.7
   flutter_datetime_picker: ^1.5.1
   flutter_rounded_date_picker: ^2.0.2
+  firebase_core: ^1.6.0
+  firebase_storage: ^10.0.3
+  file_picker: ^4.0.3
+
 
 dev_dependencies:
   flutter_test:

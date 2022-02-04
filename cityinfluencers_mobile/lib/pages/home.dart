@@ -55,7 +55,10 @@ class _HomePageState extends State<HomePage> {
         ),
         //Navigation drawer
         drawer: _loadNavigation(),
-        body: Container(
+        body: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child:
+        Container(
           color: Colors.white,
           child: Column(children: [
             Stack(
@@ -88,10 +91,9 @@ class _HomePageState extends State<HomePage> {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.3,
                 height: 40.0,
-                child: Align(
-                  alignment: Alignment.center,
-                  child:TextField(
+                child: TextField(
                   decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(0.0),
                     hintText: "Zoeken...",
                     prefixIcon: const Padding(
                       padding: EdgeInsets.all(0.0),
@@ -108,11 +110,10 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
-              ),
             ),
             _recListItems(),
           ]),
-        ));
+        )));
   }
 
   ListView _recListItems() {

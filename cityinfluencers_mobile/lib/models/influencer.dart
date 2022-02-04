@@ -9,12 +9,14 @@ class Influencer {
   User user;
   String gender;
   List<Domain>? domains;
+  String? pictureUrl;
 
   Influencer({
     this.influencerId,
     required this.user,
     required this.gender,
     this.domains,
+    this.pictureUrl,
   });
 
   factory Influencer.fromJson(Map<String, dynamic> json) {
@@ -24,12 +26,15 @@ class Influencer {
       gender: json['gender'],
       domains:
           (json['domains'] as List).map((i) => Domain.fromJson(i)).toList(),
+      pictureUrl: json['pictureUrl'],
     );
   }
 
   Map<String, dynamic> toJson() => {
+        'influencerId': influencerId,
         'user': user,
         'gender': gender,
         'domains': domains,
+        'pictureUrl': pictureUrl,
       };
 }
