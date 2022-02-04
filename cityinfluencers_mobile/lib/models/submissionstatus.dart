@@ -14,6 +14,7 @@ class SubmissionStatus {
   }
 
   Map<String, dynamic> toJson() => {
+        'statusId': statusId,
         'name': name,
       };
 }

@@ -6,6 +6,7 @@ import 'package:cityinfluencers_mobile/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:cityinfluencers_mobile/models/campaign.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'dart:convert';
 import '../models/user.dart';
 
@@ -26,7 +27,6 @@ class CityInfluencerApi {
       throw Exception('Failed to load users');
     }
   }
-
 
   // REST API call: GET /users/username
   static Future<User> getUser(String userName) async {
@@ -49,7 +49,6 @@ class CityInfluencerApi {
     );
     return User.fromJson(jsonDecode(response.body));
   }
-
 
   // ---------- Campaigns ---------------
   // REST API call: GET /campaigns
@@ -163,11 +162,35 @@ class CityInfluencerApi {
     Influencer influencer = Influencer.fromJson(jsonDecode(response.body));
     return influencer;
   }
-  
+
+  // REST API call: PUT /influencers
+  static Future<Influencer> updateInfluencer(Influencer influencer) async {
+    var url = Uri.https(server, '/influencers');
+
+    final http.Response response = await http.put(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(influencer),
+    );
+    if (response.statusCode == 200) {
+      return Influencer.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to update influencer');
+    }
+  }
+
   // ---------- Submissions ---------------
   // REST API call: GET /submissions/{influencerId}/{campaignId}
-  static Future<Submission> fetchSubmission(int influencerId, int campaignId) async {
-    var url = Uri.https(server, '/submissions/' + influencerId.toString() + '/' + campaignId.toString());
+  static Future<Submission> fetchSubmission(
+      int influencerId, int campaignId) async {
+    var url = Uri.https(
+        server,
+        '/submissions/' +
+            influencerId.toString() +
+            '/' +
+            campaignId.toString());
     final response = await http.get(url);
     Submission submission = Submission.fromJson(jsonDecode(response.body));
     if (response.statusCode == 200) {
@@ -177,11 +200,12 @@ class CityInfluencerApi {
     }
   }
 
-   // REST API call: PUT /submissions/1
-  static Future<Submission> updateSubmission(int id, Submission submission) async {
-    var url =
-        Uri.https(server, '/submissions/' + id.toString(), {"_expand": "collection"});
+  // REST API call: PUT /submissions
+  static Future<Submission> updateSubmission(Submission submission) async {
+    var url = Uri.https(server, '/submissions');
 
+    print(submission.toJson());
+    print(submission.submissionStatus.toJson());
     final http.Response response = await http.put(
       url,
       headers: <String, String>{
@@ -195,5 +219,4 @@ class CityInfluencerApi {
       throw Exception('Failed to update submission');
     }
   }
-
 }

@@ -3,12 +3,18 @@ import 'package:cityinfluencers_mobile/models/campaign.dart';
 import 'package:cityinfluencers_mobile/models/influencer.dart';
 import 'package:cityinfluencers_mobile/models/submission.dart';
 import 'package:cityinfluencers_mobile/pages/campaignDetail.dart';
+import 'package:cityinfluencers_mobile/services/storage_service.dart';
 import 'package:cityinfluencers_mobile/widgets/navigation.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class SubmissionPage extends StatefulWidget {
-  const SubmissionPage(
-      {Key? key, required this.influencerId, this.username, required this.campaignId})
+  Widget _body = const CircularProgressIndicator();
+  SubmissionPage(
+      {Key? key,
+      required this.influencerId,
+      this.username,
+      required this.campaignId})
       : super(key: key);
   final int? influencerId;
   final String? username;
@@ -22,81 +28,109 @@ class _SubmissionPageState extends State<SubmissionPage> {
   Influencer? influencer;
   Campaign? campaign;
   Submission? submission;
+  Storage storage = Storage();
   //beginstate checks
   @override
   void initState() {
-    _getUser(widget.username);
-    _getCampaign(widget.campaignId);
-    _getSubmission(widget.influencerId, widget.campaignId);
+    _getStarted(widget.username, widget.campaignId, widget.influencerId);
     super.initState();
   }
 
   //opvragen van de user gegevens
-  void _getUser(String? username) {
-    CityInfluencerApi.fetchUser(username!).then((result) {
+  void _getStarted(String? username, int? campaignId, int? influencerId) async {
+    await CityInfluencerApi.fetchUser(username!).then((result) {
       setState(() {
         influencer = result;
       });
     });
-  }
-
-  void _getCampaign(int? id) {
-    CityInfluencerApi.fetchCampaign(id!).then((result) {
+    await CityInfluencerApi.fetchCampaign(campaignId!).then((result) {
       setState(() {
         campaign = result;
       });
     });
-  }
-
-  void _getSubmission(int? influencerId, int? campaignId) {
-    CityInfluencerApi.fetchSubmission(influencerId!, campaignId!)
+    await CityInfluencerApi.fetchSubmission(influencerId!, campaignId)
         .then((result) {
       setState(() {
         submission = result;
       });
     });
+    setState(() => widget._body = realbody());
   }
 
-  //build
-  @override
-  Widget build(BuildContext context) {
+  Widget realbody() {
     return Scaffold(
         appBar: AppBar(
-           centerTitle: true,
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-        title: 
-          Align(
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+          title: Align(
             alignment: Alignment.topRight,
-            child: Image.asset("assets/ci-logo.png", fit: BoxFit.cover, height: 100),
+            child: Image.asset("assets/ci-logo.png",
+                fit: BoxFit.cover, height: 100),
           ),
         ),
-        body: Container(
+        body: SingleChildScrollView( 
+          physics: const NeverScrollableScrollPhysics(),
+          child: Container(
             padding: const EdgeInsets.all(10.0),
             child: Column(children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(campaign!.name,
-                  style: const TextStyle(
-                    fontSize: 25, color: Colors.black)
-                  )
-              ),
-                
-              Container(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.10,
-                  right: MediaQuery.of(context).size.width * 0.10,
-                ),
-                child: TextField(
-                  decoration: const InputDecoration(
-                    labelText: 'Afbeelding Url',
-                  ),
-                  onChanged: (String string) {
-                    submission!.url = string;
+                      style:
+                          const TextStyle(fontSize: 25, color: Colors.black))),
+              FutureBuilder(
+                  future: storage.getFile(submission!.url),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done &&
+                        snapshot.hasData) {
+                      return Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          child: FadeInImage(
+                            placeholder: const AssetImage(
+                                'assets/profileplaceholder.png'),
+                            image: NetworkImage(snapshot.data!),
+                            fit: BoxFit.cover,
+                          ));
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        !snapshot.hasData) {
+                      return const CircularProgressIndicator();
+                    }
+                    return Container();
+                  }),
+              ElevatedButton(
+                  onPressed: () async {
+                    final results = await FilePicker.platform.pickFiles(
+                      allowMultiple: false,
+                      type: FileType.custom,
+                      allowedExtensions: ['png', 'jpg'],
+                    );
+
+                    if (results == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('No File selected.')));
+                      return null;
+                    }
+
+                    final path = results.files.single.path!;
+                    final fileName = results.files.single.name;
+
+                    storage
+                        .uploadFile(path, fileName)
+                        .then((value) => print('done'));
+
+                    submission!.url = fileName;
                   },
-                ),
-              ),
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      onPrimary: Colors.white),
+                  child: const Text('Afbeelding')),
               Container(
                 padding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width * 0.10,
@@ -104,22 +138,52 @@ class _SubmissionPageState extends State<SubmissionPage> {
                 ),
                 child: TextField(
                   maxLines: null,
-                  decoration: const InputDecoration(
-                    labelText: 'Jou Post',
+                  decoration: InputDecoration(
+                    labelText: 'Jouw Post',
+                    hintText: submission!.description,
                   ),
                   onChanged: (String string) {
                     submission!.description = string;
                   },
                 ),
               ),
-            ])));
+              Container(
+                  padding: const EdgeInsets.only(top: 20),
+                  height: 60,
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        onPrimary: Colors.white),
+                    onPressed: () {
+                      _onSubmit(submission!);
+                    },
+                    child: const Text('Submit'),
+                  ))
+            ]))));
   }
 
-  _loadNavigation() {
-    if (influencer == null) {
-      return const Drawer(child: Text("Loading..."));
-    } else {
-      return NavigationWidget(influencer: influencer!);
-    }
+  //build
+  @override
+  Widget build(BuildContext context) {
+    return widget._body;
+  }
+
+  _onSubmit(Submission submission) async {
+    submission.submissionStatus.statusId = 2;
+    submission.submissionStatus.name = "Ingezonden";
+    await CityInfluencerApi.updateSubmission(submission);
+    _navigateToCampaign(influencer!.user.userName, campaign!.id);
+  }
+
+  void _navigateToCampaign(String? userName, int campaignId) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              CampaignDetailPage(username: userName, id: campaignId)),
+    );
   }
 }
