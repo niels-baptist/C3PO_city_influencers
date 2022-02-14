@@ -192,7 +192,6 @@ class CityInfluencerApi {
             '/' +
             campaignId.toString());
     final response = await http.get(url);
-    print(jsonDecode(response.body));
     Submission submission = Submission.fromJson(jsonDecode(response.body));
     if (response.statusCode == 200) {
       return submission;
@@ -205,8 +204,6 @@ class CityInfluencerApi {
   static Future<Submission> updateSubmission(Submission submission) async {
     var url = Uri.https(server, '/submissions');
 
-    print(submission.toJson());
-    print(submission.submissionStatus.toJson());
     final http.Response response = await http.put(
       url,
       headers: <String, String>{
