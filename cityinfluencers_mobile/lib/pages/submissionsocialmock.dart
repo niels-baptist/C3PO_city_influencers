@@ -80,13 +80,20 @@ class _SubmissionPageState extends State<SubmissionPage> {
                   child: Text(campaign!.name,
                       style:
                           const TextStyle(fontSize: 25, color: Colors.black))),
+                          
+              const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: 
+                  Text("Jouw post", 
+                      style:
+                          TextStyle(fontSize: 25, color: Colors.black)),),
               FutureBuilder(
                   future: storage.getFile(submission!.url!),
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     if (snapshot.connectionState == ConnectionState.done &&
                         snapshot.hasData) {
-                      return Container(
+                      return SizedBox(
                           width: MediaQuery.of(context).size.width * 0.5,
                           height: MediaQuery.of(context).size.height * 0.3,
                           child: FadeInImage(
@@ -102,51 +109,17 @@ class _SubmissionPageState extends State<SubmissionPage> {
                     }
                     return Container();
                   }),
-              ElevatedButton(
-                  onPressed: () async {
-                    final results = await FilePicker.platform.pickFiles(
-                      allowMultiple: false,
-                      type: FileType.custom,
-                      allowedExtensions: ['png', 'jpg'],
-                    );
-
-                    if (results == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No File selected.')));
-                      return null;
-                    }
-
-                    final path = results.files.single.path!;
-                    final fileName = results.files.single.name;
-
-                    storage
-                        .uploadFile(path, fileName)
-                        .then((value) => print('done'));
-
-                    submission!.url = fileName;
-                  },
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      onPrimary: Colors.white),
-                  child: const Text('Afbeelding')),
+              
               Container(
                 padding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width * 0.10,
                   right: MediaQuery.of(context).size.width * 0.10,
+                  top: MediaQuery.of(context).size.height * 0.03,
                 ),
-                child: TextField(
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    labelText: 'Jouw Post',
-                    hintText: submission!.description,
-                  ),
-                  onChanged: (String string) {
-                    submission!.description = string;
-                  },
+                child: Column(children: [
+                  Text(submission!.description),
+                ],),
                 ),
-              ),
               Container(
                   padding: const EdgeInsets.only(top: 20),
                   height: 60,
@@ -160,7 +133,18 @@ class _SubmissionPageState extends State<SubmissionPage> {
                     onPressed: () {
                       _onSubmit(submission!);
                     },
-                    child: const Text('Submit'),
+                    child:  RichText(
+                            text: const TextSpan(children: [
+                              WidgetSpan(
+                                child: Icon(Icons.facebook_rounded),
+                              ),
+                              TextSpan(
+                                  text: "Post plaatsen",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600)),
+                            ]),
+                          ),
                   ))
             ]))));
   }

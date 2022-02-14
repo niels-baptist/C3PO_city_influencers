@@ -192,6 +192,7 @@ class CityInfluencerApi {
             '/' +
             campaignId.toString());
     final response = await http.get(url);
+    print(jsonDecode(response.body));
     Submission submission = Submission.fromJson(jsonDecode(response.body));
     if (response.statusCode == 200) {
       return submission;

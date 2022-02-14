@@ -2,13 +2,13 @@ import 'package:cityinfluencers_mobile/models/submissionstatus.dart';
 
 class Submission {
   int? submissionId;
-  String url;
+  String? url;
   String description;
   SubmissionStatus submissionStatus;
 
   Submission(
       {this.submissionId,
-      required this.url,
+      this.url,
       required this.description,
       required this.submissionStatus});
 
