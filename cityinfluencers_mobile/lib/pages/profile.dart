@@ -52,6 +52,8 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
         ),
+        //Navigation drawer
+        drawer: _loadNavigation(),
         body: Column(
           children: [
             Container(
@@ -194,5 +196,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 influencer: influencer,
               )),
     );
+  }
+  
+  _loadNavigation() {
+    if (influencer == null) {
+      return const Drawer(child: Text("Loading..."));
+    } else {
+      return NavigationWidget(influencer: influencer!);
+    }
   }
 }
