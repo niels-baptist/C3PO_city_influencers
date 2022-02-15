@@ -70,6 +70,8 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
               Image.asset("assets/ci-logo.png", fit: BoxFit.cover, height: 100),
         ),
       ),
+        //Navigation drawer
+        drawer: _loadNavigation(),
       body: Container(
           padding: const EdgeInsets.only(left: 50.0, bottom: 3.0, right: 50.0),
           child: Column(
@@ -193,5 +195,12 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                 campaignId: campaignId,
               )),
     );
+  }
+  _loadNavigation() {
+    if (influencer == null) {
+      return const Drawer(child: Text("Loading..."));
+    } else {
+      return NavigationWidget(influencer: influencer!);
+    }
   }
 }
