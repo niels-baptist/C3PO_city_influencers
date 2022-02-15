@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
     initializeDateFormatting();
   }
 
-  //opvragen van de user gegevens
+  //opvragen van de influencer gegevens
   void _getUser(String? username) async {
     await CityInfluencerApi.fetchUser(username!).then((result) {
       setState(() {
@@ -45,6 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return widget._body;
   }
 
+  //apparte body om null error te vermijden tijdens loading
   Widget realBody() {
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -57,10 +58,12 @@ class _ProfilePageState extends State<ProfilePage> {
         body: Column(
           children: [
             Container(
+              //banner
                       decoration: const BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage("assets/profilebanner.jpg"),
                               fit: BoxFit.cover)),
+              //profielafbeelding
                       child: FutureBuilder(
                 future: storage.getFile(influencer!.pictureUrl!),
                 builder:
@@ -90,6 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(
               height: 60,
             ),
+            //naam van de influencer
             Text(
               influencer!.user.firstName + " " + influencer!.user.name,
               style: const TextStyle(
@@ -101,6 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(
               height: 10,
             ),
+            //influencer locatie
             Text(
               influencer!.user.location.name +
                   ", " +
@@ -114,6 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(
               height: 10,
             ),
+            //influencer verjaardag
             Text(
               "Verjaardag: " +
                   DateFormat.MMMMd("nl")
@@ -127,6 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(
               height: 15,
             ),
+            //knop naar profiel edit form
             SizedBox(
                 height: 40,
                 child: ElevatedButton(
@@ -139,6 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         onPrimary: Colors.white),
                     child: const Text('Instellingen'))),
+            //mock social media followercount
             Card(
               margin:
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
@@ -188,6 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ));
   }
 
+  //navigation call naar edit form
   void _navigateToEdit(Influencer influencer) async {
     await Navigator.push(
       context,
@@ -198,6 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
   
+  //afhalen van navigatie widget
   _loadNavigation() {
     if (influencer == null) {
       return const Drawer(child: Text("Loading..."));

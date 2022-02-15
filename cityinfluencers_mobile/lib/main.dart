@@ -10,6 +10,7 @@ import 'models/influencer.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    //eventual required options
   );
   runApp(const MyApp());
 }
@@ -98,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                     'Sign in',
                     style: TextStyle(fontSize: 20),
                   )),
-
+              //input gebruikersnaam
               Container(
                 padding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width * 0.10,
@@ -130,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.only(top: 15.0, bottom: 50.00),
                   child: TextButton(
                     onPressed: () {
-                      //forgot password screen
+                      //forgot password screen(not implemented)
                     },
                     child: const Text('Wachtwoord vergeten?'),
                   )),

@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
     _getStarted(widget.username);
   }
 
-  //opvragen van de user gegevens
+  //opvragen van de influencer gegevens en recommended campaigns
   void _getStarted(String? username) async {
     await CityInfluencerApi.fetchUser(username!).then((result) {
       setState(() {
@@ -61,6 +61,7 @@ class _HomePageState extends State<HomePage> {
         Container(
           color: Colors.white,
           child: Column(children: [
+            //banner
             Stack(
                 alignment: Alignment.bottomCenter,
                 overflow: Overflow.visible,
@@ -79,6 +80,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ]),
+            //titel
             const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Text("Aanbevolen campagnes",
@@ -86,6 +88,7 @@ class _HomePageState extends State<HomePage> {
                         fontSize: 25,
                         color: Colors.black,
                         fontWeight: FontWeight.bold))),
+            //zoekbalk
             Padding(
               padding: const EdgeInsets.only(top: 20.0),
               child: SizedBox(
@@ -100,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                       child: Icon(
                         Icons.search,
                         color: Colors.grey,
-                      ), // icon is 48px widget.
+                      ),
                     ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30.0)),
@@ -111,11 +114,12 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            //lijst
             _recListItems(),
           ]),
         )));
   }
-
+  //opbouwen van lijst
   ListView _recListItems() {
     return ListView.builder(
       itemCount: count,
@@ -153,7 +157,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
+  //navigation call naar specifieke campagne
   void _navigateToCampaign(String? userName, int campaignId) async {
     await Navigator.push(
       context,
@@ -162,7 +166,7 @@ class _HomePageState extends State<HomePage> {
               CampaignDetailPage(username: userName, id: campaignId)),
     );
   }
-
+  //functie om de campagnes te filten gebaseerd op input
   void _onSearchChanged(String string) {
     setState(() {
       _filteredCampaigns = _campaigns
@@ -171,7 +175,7 @@ class _HomePageState extends State<HomePage> {
       count = _filteredCampaigns.length;
     });
   }
-
+  //afhalen van navigatie widget
   _loadNavigation() {
     if (influencer == null) {
       return const Drawer(child: Text("Loading..."));

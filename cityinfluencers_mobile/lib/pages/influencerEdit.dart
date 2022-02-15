@@ -34,7 +34,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
     super.initState();
   }
 
-  //opvragen van de user gegevens
+  //opvragen van de nodige gegevens
   void _getStarted() async {
     await CityInfluencerApi.fetchLocations().then((result) {
       setState(() {
@@ -55,6 +55,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
     return widget._body;
   }
 
+  //apparte body om null error te vermijden tijdens loading
   Widget realBody() {
     return Scaffold(
         appBar: AppBar(
@@ -75,6 +76,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
                 child: Form(
                   key: _formKey,
                     child: Column(children: <Widget>[
+                  //titel
                   Container(
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(10),
@@ -85,6 +87,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
                             fontWeight: FontWeight.bold,
                             fontSize: 30),
                       )),
+                  //profielafbeelding veranderen
                   Row(
                     children: [
                       FutureBuilder(
@@ -155,6 +158,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
                       )
                     ],
                   ),
+                  //email veranderen
                   Container(
                     padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -170,6 +174,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
                       },
                     ),
                   ),
+                  //locatie veranderen
                   Container(
                       padding: EdgeInsets.only(
                         left: MediaQuery.of(context).size.width * 0.10,
@@ -183,6 +188,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
                           _onLocationChanged(location);
                         },
                       )),
+                  //wachtwoord veranderen    
                   Container(
                     padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -198,6 +204,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
                       obscureText: true,
                     ),
                   ),
+                  //titel
                   Container(
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(10),
@@ -208,6 +215,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
                             fontWeight: FontWeight.bold,
                             fontSize: 30),
                       )),
+                  //veranderen domains
                   Container(
                       padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.10,
@@ -254,6 +262,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
                           });
                         },
                       )),
+                  //submit knop
                   SizedBox(
                       height: 40,
                       width: MediaQuery.of(context).size.width * 0.4,
@@ -273,6 +282,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
                 ])))));
   }
 
+  //functie voor POST van de post
   void _onSubmit(
       Influencer influencer, List<Domain> domains, Location location) async {
     if (domains.isNotEmpty) {
@@ -283,12 +293,14 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
     _navigateToProfile(influencer.user.userName);
   }
 
+  //functie bij veranderen van profile picture
   void _onProfilePicChange(String url) {
     setState(() {
       widget.influencer.pictureUrl = url;
     });
   }
 
+  //navigation call voor profielpagina
   void _navigateToProfile(String username) async {
     await Navigator.push(
       context,
@@ -296,6 +308,7 @@ class _InfluencerEditPageState extends State<InfluencerEditPage> {
     );
   }
 
+  //functie bij veranderen van locatie
   void _onLocationChanged(Location location) {
     setState(() {
       _location = location;
