@@ -4,7 +4,6 @@ import 'package:cityinfluencers_mobile/models/user.dart';
 import 'package:cityinfluencers_mobile/pages/campaigns.dart';
 import 'package:cityinfluencers_mobile/pages/home.dart';
 import 'package:cityinfluencers_mobile/pages/profile.dart';
-import 'package:cityinfluencers_mobile/pages/vouchers.dart';
 import 'package:cityinfluencers_mobile/services/storage_service.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +28,11 @@ class NavigationWidget extends StatelessWidget {
                     if (snapshot.connectionState == ConnectionState.done &&
                         snapshot.hasData) {
                       return UserAccountsDrawerHeader(
-                        decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/navbanner.jpg'), fit: BoxFit.fill),),
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/navbanner.jpg'),
+                              fit: BoxFit.fill),
+                        ),
                         accountName: Text(
                             influencer!.user.firstName +
                                 " " +
@@ -69,17 +72,6 @@ class NavigationWidget extends StatelessWidget {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) =>
                           ProfilePage(username: influencer!.user.userName)));
-                },
-              ),
-              //navigate to vouchers
-              ListTile(
-                title: const Text('Vouchers'),
-                trailing: const Icon(Icons.money_outlined),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          VoucherPage(username: influencer!.user.userName)));
                 },
               ),
               ListTile(
