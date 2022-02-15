@@ -31,12 +31,14 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
   Influencer? influencer;
   Campaign? campaign;
 
+  //beginstate checks
   @override
   void initState() {
     _getStarted(widget.username);
     super.initState();
   }
 
+  //opvragen van influencer gegevens en de data van de aangeklikte campagne
   void _getStarted(String? username) async {
     await CityInfluencerApi.fetchUser(username!).then((result) {
       setState(() {
@@ -56,7 +58,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
   Widget build(BuildContext context) {
     return widget._body;
   }
-
+  //apparte body om null error te vermijden tijdens loading
   Widget realBody() {
     return Scaffold(
       appBar: AppBar(
@@ -76,6 +78,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
           padding: const EdgeInsets.only(left: 50.0, bottom: 3.0, right: 50.0),
           child: Column(
             children: [
+              //afbeelding campagne
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.3,
                 child: ClipOval(
@@ -94,6 +97,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                           fontSize: 25,
                           color: Colors.black,
                           fontWeight: FontWeight.bold))),
+              //campagne beschrijving
               Column(
                 children: [
                   Padding(
@@ -117,6 +121,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                   ),
+                  //locatie campagne
                   Padding(
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.02),
@@ -139,6 +144,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                   ),
+                  //duur van de campagne
                   Padding(
                     padding: EdgeInsets.only(
                         top: MediaQuery.of(context).size.height * 0.02),
@@ -164,6 +170,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
                   ),
                 ],
               ),
+              //knop om mee te doen aan campagne
               Padding(
                   padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.02),
@@ -184,7 +191,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
           )),
     );
   }
-
+  //navigation call naar post form
   void _postNavigate(int? influencerId, String userName, int campaignId) async {
     await Navigator.push(
       context,
@@ -196,6 +203,7 @@ class _CampaignDetailPageState extends State<CampaignDetailPage> {
               )),
     );
   }
+  //afhalen van navigatie widget
   _loadNavigation() {
     if (influencer == null) {
       return const Drawer(child: Text("Loading..."));

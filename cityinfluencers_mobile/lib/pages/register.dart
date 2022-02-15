@@ -67,12 +67,13 @@ class RegisterFormState extends State<RegisterForm> {
   String _email = '';
   var dateValue = TextEditingController();
 
+  //beginstate checks
   @override
   void initState() {
     super.initState();
     _getLocations();
   }
-
+  //haal locaties af
   void _getLocations() async {
     await CityInfluencerApi.fetchLocations().then((result) {
       setState(() {
@@ -81,6 +82,7 @@ class RegisterFormState extends State<RegisterForm> {
     });
   }
 
+  //build
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -91,7 +93,8 @@ class RegisterFormState extends State<RegisterForm> {
               key: _formKey,
               child: Column(
                 children: <Widget>[
-                  // Add TextFormFields and ElevatedButton here.
+                  // TextformFields en Buttons hier
+                  // Titel.
                   Container(
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(10),
@@ -102,6 +105,7 @@ class RegisterFormState extends State<RegisterForm> {
                             fontWeight: FontWeight.bold,
                             fontSize: 30),
                       )),
+                  //Voornaam ingeven
                   Container(
                     padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -116,6 +120,7 @@ class RegisterFormState extends State<RegisterForm> {
                       },
                     ),
                   ),
+                  //Achternaam ingeven
                   Container(
                     padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -130,6 +135,7 @@ class RegisterFormState extends State<RegisterForm> {
                       },
                     ),
                   ),
+                  //Gebruikersnaam ingeven
                   Container(
                     padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -144,7 +150,7 @@ class RegisterFormState extends State<RegisterForm> {
                       },
                     ),
                   ),
-
+                  //wachtwoord ingeven
                   Container(
                     padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -160,6 +166,7 @@ class RegisterFormState extends State<RegisterForm> {
                       obscureText: true,
                     ),
                   ),
+                  //Email ingeven
                   Container(
                     padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -174,7 +181,7 @@ class RegisterFormState extends State<RegisterForm> {
                       },
                     ),
                   ),
-
+                  //Geboortedatum ingeven
                   Container(
                     padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -197,7 +204,7 @@ class RegisterFormState extends State<RegisterForm> {
                       ),
                     ),
                   ),
-
+                  //locatie ingeven
                   Container(
                       padding: EdgeInsets.only(
                         left: MediaQuery.of(context).size.width * 0.10,
@@ -212,6 +219,7 @@ class RegisterFormState extends State<RegisterForm> {
                         },
                       )),
                   const Divider(),
+                  //Knop naar volgende deel
                   Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: Align(
@@ -219,7 +227,7 @@ class RegisterFormState extends State<RegisterForm> {
                         child: TextButton(
                           style: TextButton.styleFrom(primary: Colors.black),
                           onPressed: () {
-                            // Validate returns true if the form is valid, or false otherwise.
+                            // Form validatie.
                             if (_formKey.currentState!.validate()) {
                               _onSubmit(
                                 _username,
@@ -240,12 +248,14 @@ class RegisterFormState extends State<RegisterForm> {
             )));
   }
 
+  //veranderen van locatie
   void _onLocationChanged(Location location) {
     setState(() {
       _location = location;
     });
   }
 
+  //submitten van ingegeven data om een basic user aan te maken + doorgeven aan deel 2
   void _onSubmit(
     String username,
     String voornaam,
@@ -266,16 +276,11 @@ class RegisterFormState extends State<RegisterForm> {
       email: email,
       location: locatie,
     );
-    print(user.birthDate);
-    print(user.location.name);
-    print(user.email);
-    print(user.userName);
-    print(user.firstName);
-    print(user.name);
     user = await CityInfluencerApi.createUser(user);
     _navigateToRegister2(user);
   }
 
+  //Datepicker oproepen
   void _selectDate() {
     showRoundedDatePicker(
         context: context,
@@ -346,6 +351,7 @@ class RegisterFormState extends State<RegisterForm> {
     });
   }
 
+  //Navigation call naar deel 2
   void _navigateToRegister2(User user) async {
     await Navigator.push(
       context,

@@ -6,6 +6,7 @@ class Storage {
   final firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
+  //uploaden van afbeelding naar firebase
   Future<void> uploadFile(
     String filePath,
     String fileName,
@@ -19,6 +20,7 @@ class Storage {
     }
   }
 
+  //afhalen van afbeelding URL uit firebase
   Future<String> getFile(String fileName) async {
     String downloadUrl = "";
     try {

@@ -67,12 +67,14 @@ class RegisterFormState extends State<RegisterForm> {
 
   final _geslachten = ['M', 'V', 'X'];
 
+  //beginstate checks
   @override
   void initState() {
     super.initState();
     _getDomains();
   }
 
+  //haal campagne domeinen af
   void _getDomains() async {
     await CityInfluencerApi.fetchDomains().then((result) {
       setState(() {
@@ -81,6 +83,7 @@ class RegisterFormState extends State<RegisterForm> {
     });
   }
 
+  //build
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -89,6 +92,7 @@ class RegisterFormState extends State<RegisterForm> {
           key: _formKey,
           child: Column(
             children: <Widget>[
+              //titel
               Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
@@ -99,6 +103,7 @@ class RegisterFormState extends State<RegisterForm> {
                         fontWeight: FontWeight.bold,
                         fontSize: 30),
                   )),
+              //Profielfoto uploaden
                Row(
                     children: [
                       FutureBuilder(
@@ -169,6 +174,7 @@ class RegisterFormState extends State<RegisterForm> {
                       )
                     ],
                   ),
+              //Geslacht kiezen
               Container(
                   padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -181,6 +187,7 @@ class RegisterFormState extends State<RegisterForm> {
                       _onGenderChanged(geslacht);
                     },
                   )),
+              //Domeinen selecten
               Container(
                   padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.10,
@@ -222,6 +229,7 @@ class RegisterFormState extends State<RegisterForm> {
                       });
                     },
                   )),
+              //Submit knop
               SizedBox(
                 height: 40,
                 width: MediaQuery.of(context).size.width * 0.4,
@@ -232,7 +240,7 @@ class RegisterFormState extends State<RegisterForm> {
                       ),
                       onPrimary: Colors.white),
                   onPressed: () {
-                    // Validate returns true if the form is valid, or false otherwise.
+                    // Valideren van formulier data.
                     if (_formKey.currentState!.validate()) {
                       _onSubmit(
                         pictureUrl!,
@@ -249,17 +257,21 @@ class RegisterFormState extends State<RegisterForm> {
         ));
   }
 
+  //Veranderen van geslacht
   void _onGenderChanged(String geslacht) {
     setState(() {
       _geslacht = geslacht;
     });
   }
 
+  //Veranderen van profielafbeelding
   void _onProfilePicChange(String url) {
     setState(() {
       pictureUrl = url;
     });
   }
+
+  //Submit van gegevens voor het aanmaken van influencer, gebruikt de basic user data van deel 1
   void _onSubmit(String pictureUrl, String geslacht, List<Domain> domains) async {
     Influencer influencer = Influencer(
         influencerId: 0, gender: geslacht, user: widget.user, domains: domains, pictureUrl: pictureUrl);
@@ -267,6 +279,7 @@ class RegisterFormState extends State<RegisterForm> {
     _navigateToMain();
   }
 
+  //Navigation call naar login page
   void _navigateToMain() async {
     await Navigator.push(
       context,

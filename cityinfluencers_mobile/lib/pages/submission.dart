@@ -36,7 +36,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
     super.initState();
   }
 
-  //opvragen van de user gegevens
+  //opvragen van de Influencer gegevens, campagne gegevens en submission gegevens
   void _getStarted(String? username, int? campaignId, int? influencerId) async {
     await CityInfluencerApi.fetchUser(username!).then((result) {
       setState(() {
@@ -57,8 +57,10 @@ class _SubmissionPageState extends State<SubmissionPage> {
     setState(() => widget._body = realbody());
   }
 
+  //apparte body om null error te vermijden tijdens loading
   Widget realbody() {
     return Scaffold(
+      //banner
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: Colors.transparent,
@@ -75,11 +77,13 @@ class _SubmissionPageState extends State<SubmissionPage> {
           child: Container(
             padding: const EdgeInsets.all(10.0),
             child: Column(children: [
+              //titel
               Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(campaign!.name,
                       style:
                           const TextStyle(fontSize: 25, color: Colors.black))),
+              //afbeelding submission uploaden
               FutureBuilder(
                   future: storage.getFile(submission!.url!),
                   builder:
@@ -131,6 +135,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
                       ),
                       onPrimary: Colors.white),
                   child: const Text('Afbeelding')),
+              //multiline input voor de post
               Container(
                 padding: EdgeInsets.only(
                   left: MediaQuery.of(context).size.width * 0.10,
@@ -147,6 +152,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
                   },
                 ),
               ),
+              //submit knop
               Container(
                   padding: const EdgeInsets.only(top: 20),
                   height: 60,
@@ -171,6 +177,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
     return widget._body;
   }
 
+  //POST van de post naar de API
   _onSubmit(Submission submission) async {
     submission.submissionStatus.statusId = 2;
     submission.submissionStatus.name = "Ingezonden";
@@ -178,6 +185,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
     _navigateToCampaign(influencer!.user.userName, campaign!.id);
   }
 
+  //navigation call naar campagne pagina
   void _navigateToCampaign(String? userName, int campaignId) async {
     await Navigator.push(
       context,
